@@ -15,7 +15,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void OnGetPutPushButton();
+    void OnDataCheckBoxStateChanged(int state);
+
 private:
     Ui::MainWindow *ui;
+    const QString GET{"Get"};
+    const QString PUT{"POST"};
 };
 #endif // MAINWINDOW_H
