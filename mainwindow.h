@@ -16,6 +16,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void OnUserAgentCheckBoxStateChanged(int state);
     void OnGetPutPushButton();
     void OnDataCheckBoxStateChanged(int state);
 

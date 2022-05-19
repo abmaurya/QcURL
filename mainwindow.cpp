@@ -12,10 +12,13 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->userAgentLineEdit->hide();
+    ui->putDataPlainTextEdit->hide();
     curlpp::initialize();
     connect(ui->getPutPushButton, SIGNAL(clicked()), this, SLOT(OnGetPutPushButton()));
     connect(ui->dataCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnDataCheckBoxStateChanged(int)));
-
+    connect(ui->userAgentCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnUserAgentCheckBoxStateChanged(int)));
+    QProcess process{}
 }
 
 MainWindow::~MainWindow()
@@ -41,6 +44,10 @@ void MainWindow::OnGetPutPushButton()
             //Set Redirection
             myRequest.setOpt<FollowLocation>(ui->followRedirectCheckBox->isChecked());
             myRequest.setOpt<Verbose>(ui->verbosCheckBox->isChecked());
+            if(ui->userAgentCheckBox->isChecked())
+            {
+                myRequest.setOpt<UserAgent>(ui->userAgentLineEdit->text().toStdString());
+            }
 
 
             std::stringstream ss;
@@ -66,10 +73,23 @@ void MainWindow::OnDataCheckBoxStateChanged(int state)
     if(state == Qt::CheckState::Checked)
     {
         ui->getPutPushButton->setText(PUT);
+        ui->putDataPlainTextEdit->show();
     }
     else
     {
+        ui->putDataPlainTextEdit->hide();
         ui->getPutPushButton->setText(GET);
     }
 }
 
+void MainWindow::OnUserAgentCheckBoxStateChanged(int state)
+{
+    if(state == Qt::CheckState::Checked)
+    {
+        ui->userAgentLineEdit->show();
+    }
+    else
+    {
+        ui->userAgentLineEdit->hide();
+    }
+}
