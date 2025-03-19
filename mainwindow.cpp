@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->getPutPushButton, SIGNAL(clicked()), this, SLOT(OnGetPutPushButton()));
     connect(ui->dataCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnDataCheckBoxStateChanged(int)));
     connect(ui->userAgentCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnUserAgentCheckBoxStateChanged(int)));
-    QProcess process{}
+    //QProcess process{}
 }
 
 MainWindow::~MainWindow()
