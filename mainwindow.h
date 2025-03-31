@@ -7,6 +7,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class QLineEdit;
+class QTextEdit;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -17,11 +20,13 @@ public:
 
 private slots:
     void OnUserAgentCheckBoxStateChanged(int state);
-    void OnGetPutPushButton();
+    void OnSendPushButton();
     void OnDataCheckBoxStateChanged(int state);
 
 private:
     Ui::MainWindow *ui;
+    QLineEdit* customAgentLineEdit;
+    QTextEdit* dataLineEdit;
     const QString GET{"Get"};
     const QString PUT{"POST"};
 };

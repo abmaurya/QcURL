@@ -9,15 +9,14 @@ using namespace curlpp::options;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow), customAgentLineEdit(0), dataLineEdit(0)
 {
     ui->setupUi(this);
-    ui->userAgentLineEdit->hide();
-    ui->putDataPlainTextEdit->hide();
     curlpp::initialize();
-    connect(ui->getPutPushButton, SIGNAL(clicked()), this, SLOT(OnGetPutPushButton()));
+    connect(ui->sendPutPushButton, SIGNAL(clicked()), this, SLOT(OnSendPushButton()));
     connect(ui->dataCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnDataCheckBoxStateChanged(int)));
     connect(ui->userAgentCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnUserAgentCheckBoxStateChanged(int)));
+    ui->centralwidget->setLayout( ui->mainWindowLayout);
     //QProcess process{}
 }
 
@@ -27,7 +26,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::OnGetPutPushButton()
+void MainWindow::OnSendPushButton()
 {
     try
         {
@@ -46,7 +45,7 @@ void MainWindow::OnGetPutPushButton()
             myRequest.setOpt<Verbose>(ui->verbosCheckBox->isChecked());
             if(ui->userAgentCheckBox->isChecked())
             {
-                myRequest.setOpt<UserAgent>(ui->userAgentLineEdit->text().toStdString());
+                myRequest.setOpt<UserAgent>(customAgentLineEdit->text().toStdString());
             }
 
 
@@ -72,13 +71,17 @@ void MainWindow::OnDataCheckBoxStateChanged(int state)
 {
     if(state == Qt::CheckState::Checked)
     {
-        ui->getPutPushButton->setText(PUT);
-        ui->putDataPlainTextEdit->show();
+        if(!dataLineEdit)
+        {
+            dataLineEdit = new QTextEdit(ui->centralwidget);
+            dataLineEdit->setPlaceholderText("Your data here");
+            ui->mainWindowLayout->insertWidget(4, dataLineEdit);
+        }
+        dataLineEdit->show();
     }
     else
     {
-        ui->putDataPlainTextEdit->hide();
-        ui->getPutPushButton->setText(GET);
+        dataLineEdit->hide();
     }
 }
 
@@ -86,10 +89,18 @@ void MainWindow::OnUserAgentCheckBoxStateChanged(int state)
 {
     if(state == Qt::CheckState::Checked)
     {
-        ui->userAgentLineEdit->show();
+        if(!customAgentLineEdit)
+        {
+            customAgentLineEdit = new QLineEdit(ui->centralwidget);
+            customAgentLineEdit->setPlaceholderText("Your custom agent here");
+            ui->mainWindowLayout->insertWidget(3, customAgentLineEdit);
+        }
+        customAgentLineEdit->show();
     }
     else
     {
-        ui->userAgentLineEdit->hide();
+        // delete le;
+        customAgentLineEdit->hide();
     }
 }
+
