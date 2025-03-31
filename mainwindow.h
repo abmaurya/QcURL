@@ -27,7 +27,8 @@ private:
     Ui::MainWindow *ui;
     QLineEdit* customAgentLineEdit;
     QTextEdit* dataLineEdit;
-    const QString GET{"Get"};
+    const QString GET{"GET"};
     const QString PUT{"POST"};
+    size_t sendButtonIndex;
 };
 #endif // MAINWINDOW_H

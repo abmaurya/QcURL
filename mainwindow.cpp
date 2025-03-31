@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->dataCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnDataCheckBoxStateChanged(int)));
     connect(ui->userAgentCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnUserAgentCheckBoxStateChanged(int)));
     ui->centralwidget->setLayout( ui->mainWindowLayout);
-    //QProcess process{}
+    sendButtonIndex = ui->mainWindowLayout->count()-1;
 }
 
 MainWindow::~MainWindow()
@@ -75,7 +75,7 @@ void MainWindow::OnDataCheckBoxStateChanged(int state)
         {
             dataLineEdit = new QTextEdit(ui->centralwidget);
             dataLineEdit->setPlaceholderText("Your data here");
-            ui->mainWindowLayout->insertWidget(4, dataLineEdit);
+            ui->mainWindowLayout->insertWidget(sendButtonIndex - 1, dataLineEdit);
         }
         dataLineEdit->show();
     }
@@ -93,7 +93,9 @@ void MainWindow::OnUserAgentCheckBoxStateChanged(int state)
         {
             customAgentLineEdit = new QLineEdit(ui->centralwidget);
             customAgentLineEdit->setPlaceholderText("Your custom agent here");
-            ui->mainWindowLayout->insertWidget(3, customAgentLineEdit);
+            //increment sendButtonIndex because we want to keep always add
+            // the custom data field below custom agent field
+            ui->mainWindowLayout->insertWidget(sendButtonIndex++ - 1, customAgentLineEdit);
         }
         customAgentLineEdit->show();
     }
