@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSharedPointer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -9,6 +10,7 @@ QT_END_NAMESPACE
 
 class QLineEdit;
 class QTextEdit;
+class CurlHandler;
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +31,7 @@ private:
     QTextEdit* dataLineEdit;
     const QString GET{"GET"};
     const QString PUT{"POST"};
-    size_t sendButtonIndex;
+    uint sendButtonIndex;
+    QSharedPointer<CurlHandler> curlHandler;
 };
 #endif // MAINWINDOW_H
