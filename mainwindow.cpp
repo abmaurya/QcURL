@@ -5,7 +5,6 @@
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
-#include <sstream>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,55 +31,26 @@ void MainWindow::OnSendPushButton()
     std::string customAgent = "";
     if(ui->userAgentCheckBox->isChecked())
     {
+        if(customAgentLineEdit->text().size() <= 0)
+        {
+            return;
+        }
         customAgent = customAgentLineEdit->text().toStdString();
     }
-    long portNumber = 80;
-    if(!ui->urlLineEdit->text().contains("http"))
+    if(ui->urlLineEdit->text().size() <= 0)
     {
-       portNumber = std::stol(ui->portLineEdit->text().toStdString());
+        return;
     }
     auto url = ui->urlLineEdit->text().toStdString();
+    unsigned long long portNumber = 443;
+    if(ui->urlLineEdit->text().size() > 0)
+    {
+        portNumber = std::stol(ui->portLineEdit->text().toStdString());
+    }
 
-    //##########################################################################
-    // Our request to be sent.
-    try{
-    curlpp::Easy myRequest;
-
-    //Set Redirection
-    myRequest.setOpt<curlpp::options::FollowLocation>(redirection);
-
-    myRequest.setOpt<curlpp::options::Verbose>(verbose);
-
-    //Adding Custom User-Agent, if given
-    myRequest.setOpt<curlpp::options::UserAgent>(customAgent);
-
-    //Set the port
-    myRequest.setOpt<curlpp::options::Port>(80);
-    // Set the URL.
-    myRequest.setOpt<curlpp::options::Url>(url);
-
-    std::stringstream ss;
-    // Send request and get a result in stringstream.
-    //NOTE: Accessing the ostream operator (<<) from
-    ss<<myRequest;
+    std::string result = curlHandler->SendData(redirection, verbose, url, portNumber, customAgent);
     ui->resultTextBrowser->clear();
-    ui->resultTextBrowser->setText(ss.str().c_str());
-    }
-    catch(curlpp::RuntimeError & e)
-    {
-        qDebug() << e.what();
-    }
-
-    catch(curlpp::LogicError & e)
-    {
-        qDebug() << e.what();
-    }
-    //#################################################################
-
-
-    // std::string result = curlHandler->SendData(redirection, verbose, url, portNumber, customAgent);
-    // ui->resultTextBrowser->clear();
-    // ui->resultTextBrowser->setText(ss.str().c_str());
+    ui->resultTextBrowser->setText(result.c_str());
 }
 
 void MainWindow::OnDataCheckBoxStateChanged(int state)

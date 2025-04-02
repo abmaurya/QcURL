@@ -33,7 +33,10 @@ std::string CurlHandler::SendData(bool redirection, bool verbose, std::string ur
         myRequest.setOpt<UserAgent>(customAgent);
 
         //Set the port
-        myRequest.setOpt<Port>(portNumber);
+        if(url.find("http") == std::string::npos)
+        {
+            myRequest.setOpt<Port>(portNumber);
+        }
         // Set the URL.
         myRequest.setOpt<Url>(url);
 
