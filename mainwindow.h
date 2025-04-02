@@ -29,8 +29,7 @@ private:
     Ui::MainWindow *ui;
     QLineEdit* customAgentLineEdit;
     QTextEdit* dataLineEdit;
-    const QString GET{"GET"};
-    const QString PUT{"POST"};
+    const QStringList METHOD_NAME{"GET","POST"};
     uint sendButtonIndex;
     QSharedPointer<CurlHandler> curlHandler;
 };

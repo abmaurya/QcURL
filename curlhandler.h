@@ -3,12 +3,23 @@
 
 #include<string>
 
+struct CurlOptions
+{
+    bool Redirection;
+    bool Verbose;
+    bool Post;
+    long PortNumber;
+    std::string Url;
+    std::string PostData;
+    std::string CustomAgent;
+};
+
 class CurlHandler
 {
 public:
     CurlHandler();
     ~CurlHandler();
-    std::string SendData(bool redirection, bool verbose, std::string url, long portNumber, std::string customAgent = "");
+    std::string SendData(CurlOptions curlOp);
 };
 
 #endif // CURLHANDLER_H

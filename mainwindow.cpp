@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->userAgentCheckBox, SIGNAL(stateChanged(int)), this, SLOT(OnUserAgentCheckBoxStateChanged(int)));
     ui->centralwidget->setLayout( ui->mainWindowLayout);
     sendButtonIndex = ui->mainWindowLayout->count()-1;
+    ui->methodName->addItems(METHOD_NAME);
     curlHandler = QSharedPointer<CurlHandler>::create();
 }
 
@@ -26,29 +27,33 @@ MainWindow::~MainWindow()
 
 void MainWindow::OnSendPushButton()
 {
-    auto redirection = ui->followRedirectCheckBox->isChecked();
-    auto verbose = ui->verbosCheckBox->isChecked();
-    std::string customAgent = "";
+    CurlOptions curlOp;
+    curlOp.Redirection = ui->followRedirectCheckBox->isChecked();
+    curlOp.Verbose = ui->verbosCheckBox->isChecked();
     if(ui->userAgentCheckBox->isChecked())
     {
         if(customAgentLineEdit->text().size() <= 0)
         {
             return;
         }
-        customAgent = customAgentLineEdit->text().toStdString();
+        curlOp.CustomAgent = customAgentLineEdit->text().toStdString();
     }
     if(ui->urlLineEdit->text().size() <= 0)
     {
         return;
     }
-    auto url = ui->urlLineEdit->text().toStdString();
-    unsigned long long portNumber = 443;
+    curlOp.Url = ui->urlLineEdit->text().toStdString();
+
     if(ui->urlLineEdit->text().size() > 0)
     {
-        portNumber = std::stol(ui->portLineEdit->text().toStdString());
+        curlOp.PortNumber = std::stol(ui->portLineEdit->text().toStdString());
     }
-
-    std::string result = curlHandler->SendData(redirection, verbose, url, portNumber, customAgent);
+    curlOp.Post = ui->methodName->currentText() == METHOD_NAME[1]?true:false;
+    if(curlOp.Post)
+    {
+        curlOp.PostData = dataLineEdit->toMarkdown().toStdString();
+    }
+    std::string result = curlHandler->SendData(curlOp);
     ui->resultTextBrowser->clear();
     ui->resultTextBrowser->setText(result.c_str());
 }

@@ -17,7 +17,7 @@ CurlHandler::~CurlHandler()
     curlpp::terminate();
 }
 
-std::string CurlHandler::SendData(bool redirection, bool verbose, std::string url, long portNumber, std::string customAgent)
+std::string CurlHandler::SendData(CurlOptions curlOp)
 {
     try
     {
@@ -25,21 +25,25 @@ std::string CurlHandler::SendData(bool redirection, bool verbose, std::string ur
         curlpp::Easy myRequest;
 
         //Set Redirection
-        myRequest.setOpt<FollowLocation>(redirection);
+        myRequest.setOpt<FollowLocation>(curlOp.Redirection);
 
-        myRequest.setOpt<Verbose>(verbose);
+        myRequest.setOpt<Verbose>(curlOp.Verbose);
 
         //Adding Custom User-Agent, if given
-        myRequest.setOpt<UserAgent>(customAgent);
+        myRequest.setOpt<UserAgent>(curlOp.CustomAgent);
 
-        //Set the port
-        if(url.find("http") == std::string::npos)
+        if(curlOp.Post)
         {
-            myRequest.setOpt<Port>(portNumber);
+            myRequest.setOpt<Post>(curlOp.Post);
+            myRequest.setOpt<PostFields>(curlOp.PostData);
+        }
+        //Set the port
+        if(curlOp.Url.find("http") == std::string::npos)
+        {
+            myRequest.setOpt<Port>(curlOp.PortNumber);
         }
         // Set the URL.
-        myRequest.setOpt<Url>(url);
-
+        myRequest.setOpt<Url>(curlOp.Url);
         std::stringstream ss;
         // Send request and get a result in stringstream.
         //NOTE: Accessing the ostream operator (<<) from
